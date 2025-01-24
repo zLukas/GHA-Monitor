@@ -21,11 +21,21 @@ func (c* Credentials)Set() error{
 		}else{
 			if value ,err := readFromSection(cfg, "credentials", "token"); err == nil{
 				c.token = value
-				fmt.Println("credentials set up")
-				return nil
 			}else{
 				return fmt.Errorf("Failed to read file: %v", err)
 			}
+			if value ,err := readFromSection(cfg, "credentials", "owner"); err == nil{
+				c.Owner = value
+			}else{
+				return fmt.Errorf("Failed to read file: %v", err)
+			}
+			if value ,err := readFromSection(cfg, "credentials", "repo"); err == nil{
+				c.Repo = value
+			}else{
+				return fmt.Errorf("Failed to read file: %v", err)
+			}
+			fmt.Println("credentials set up")
+			return nil
 		}
 	}
 }
