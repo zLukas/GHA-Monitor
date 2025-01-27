@@ -9,29 +9,29 @@ import (
 
 const credentialsPath string = "/.gha/config"
 
-func (c* Credentials)Set() error{
+func (c *Credentials) Set() error {
 	home := os.Getenv("HOME")
-	_, err := os.Stat(home+credentialsPath);
-	if  err != nil {
+	_, err := os.Stat(home + credentialsPath)
+	if err != nil {
 		return err
 	} else {
-		cfg, err := ini.Load(home+credentialsPath)
+		cfg, err := ini.Load(home + credentialsPath)
 		if err != nil {
 			return fmt.Errorf("Failed to open file: %v", err)
-		}else{
-			if value ,err := readFromSection(cfg, "credentials", "token"); err == nil{
+		} else {
+			if value, err := readFromSection(cfg, "credentials", "token"); err == nil {
 				c.token = value
-			}else{
+			} else {
 				return fmt.Errorf("Failed to read file: %v", err)
 			}
-			if value ,err := readFromSection(cfg, "credentials", "owner"); err == nil{
+			if value, err := readFromSection(cfg, "credentials", "owner"); err == nil {
 				c.Owner = value
-			}else{
+			} else {
 				return fmt.Errorf("Failed to read file: %v", err)
 			}
-			if value ,err := readFromSection(cfg, "credentials", "repo"); err == nil{
+			if value, err := readFromSection(cfg, "credentials", "repo"); err == nil {
 				c.Repo = value
-			}else{
+			} else {
 				return fmt.Errorf("Failed to read file: %v", err)
 			}
 			fmt.Println("credentials set up")
@@ -40,10 +40,10 @@ func (c* Credentials)Set() error{
 	}
 }
 
-func readFromSection(cfg *ini.File, section string,  key string) (string, error){
+func readFromSection(cfg *ini.File, section string, key string) (string, error) {
 	if key := cfg.Section(section).Key(key); key != nil {
 		return key.String(), nil
-	}else{
+	} else {
 		return "", fmt.Errorf("no %s key in section %s", key, section)
 	}
 }
