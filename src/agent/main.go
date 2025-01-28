@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"os"
 
@@ -17,13 +16,10 @@ func main() {
 		fmt.Printf("Error seting credentials: %s \n", err)
 		os.Exit(1)
 	}
-	wf, err := api.FetchWorkflows(context.TODO(), git)
+	wfs, err := cmd.FetchAllWorkflows(git)
 	if err != nil {
 		fmt.Printf("Error fetching workflows: %s \n", err)
 		os.Exit(1)
-	}
-	for _, w := range wf {
-		fmt.Println(w.Name)
 	}
 
 }
