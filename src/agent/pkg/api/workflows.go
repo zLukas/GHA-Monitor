@@ -3,12 +3,16 @@ package api
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/google/go-github/v68/github"
 )
 
 func FetchWorkflows(ctx context.Context, client *Git) ([]Workflow, error) {
-	rawWorkflows, _, err := client.GitClient.Actions.ListWorkflows(ctx, client.owner, client.repo, nil)
+	rawWorkflows, resp, err := client.GitClient.Actions.ListWorkflows(ctx, client.owner, client.repo, nil)
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("http error: %v ", resp.Status)
+	}
 	if err != nil {
 		return nil, fmt.Errorf("error getting workflows: %v", err)
 	}
@@ -43,4 +47,23 @@ func FetchWorkflowRuns(ctx context.Context, client *Git, workflowID int64) ([]Ru
 	}
 
 	return workflowRuns, nil
+}
+
+func FetchRunSteps(ctx context.Context, client *Git, runID int64) ([]Step, error) {
+	jobs, _, err := client.GitClient.Actions.ListWorkflowJobs(ctx, client.owner, client.repo, runID, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error getting workflow jobs: %v", err)
+	}
+
+	var steps []Step
+	for _, job := range jobs.Jobs {
+		for _, step := range job.Steps {
+			steps = append(steps, Step{
+				Name:   step.GetName(),
+				Status: step.GetStatus(),
+			})
+		}
+	}
+
+	return steps, nil
 }

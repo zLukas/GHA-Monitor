@@ -16,6 +16,7 @@ type Git struct {
 type Workflow struct {
 	ID   int64
 	Name string
+	Runs []Run
 }
 
 type Run struct {
@@ -23,6 +24,12 @@ type Run struct {
 	Status     string
 	Conclusion string
 	CreatedAt  time.Time
+	Steps      []Step
+}
+
+type Step struct {
+	Name   string
+	Status string
 }
 
 func NewClient(owner, repo, token string) (*Git, error) {
