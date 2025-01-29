@@ -16,10 +16,9 @@ func main() {
 		fmt.Printf("Error seting credentials: %s \n", err)
 		os.Exit(1)
 	}
-	wfs, err := cmd.FetchAllWorkflows(git)
-	if err != nil {
-		fmt.Printf("Error fetching workflows: %s \n", err)
-		os.Exit(1)
-	}
+	fmt.Println("Agent is running...")
+	cmd.Serve(git)
 
 }
+
+
