@@ -15,16 +15,18 @@ var (
 		Name: "gha_step_status",
 		Help: "The status of each step in GitHub Actions workflows",
 	}, []string{"workflow_name", "run_id", "step_name", "status"})
-	reg prometheus.Registerer
+	reg *prometheus.Registry
 )
 func InitPrometheus() {
-	reg := prometheus.NewRegistry()
+	reg = prometheus.NewRegistry()
 	reg.MustRegister(StepStatus)
 	http.Handle("/metrics", promhttp.HandlerFor(reg, promhttp.HandlerOpts{Registry: reg}))
 	log.Println("Starting Prometheus HTTP server on :2112")
-	if err := http.ListenAndServe(":2112", nil); err != nil{
-		log.Fatalf("Failed to start HTTP server: %v", err)
+	go func() {
+		if err := http.ListenAndServe(":2112", nil); err != nil{
+			log.Fatalf("Failed to start HTTP server: %v", err)
 	}	
+	}()
 }
 
 
@@ -36,7 +38,7 @@ func ToPrometheusWithSteps(workflows []api.Workflow) {
 				if step.Status == "completed" {
 					status = 1
 				}
-				StepStatus.WithLabelValues(wf.Name, strconv.FormatInt(run.ID, 2), step.Name, step.Status).Set(float64(status))
+				StepStatus.WithLabelValues(wf.Name, strconv.FormatInt(run.ID, 10), step.Name, step.Status).Set(float64(status))
 			}
 		}
 	}
