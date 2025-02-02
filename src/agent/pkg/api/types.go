@@ -29,8 +29,9 @@ type Run struct {
 }
 
 type Step struct {
-	Name   string
-	Status string
+	Name       string
+	Status     string
+	Conclusion string
 }
 
 func NewClient(owner, repo, token string) (*Git, error) {

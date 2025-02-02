@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"os"
 
 	"github.com/GHA-Monitor/agent/pkg/api"
 )
@@ -55,4 +57,19 @@ func fetchRuns(workflows []api.Workflow, ctx context.Context, client *api.Git) (
 		workflows[res.index].Runs = res.runs
 	}
 	return workflows, nil
+}
+
+func SaveToFile(wfs []api.Workflow) error {
+	file, err := os.Create("workflows.json")
+	if err != nil {
+		return fmt.Errorf("error creating JSON file: %w", err)
+	}
+	defer file.Close()
+
+	encoder := json.NewEncoder(file)
+	encoder.SetIndent("", "  ")
+	if err := encoder.Encode(wfs); err != nil {
+		return fmt.Errorf("error encoding JSON: %w", err)
+	}
+	return nil
 }

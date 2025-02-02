@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 
@@ -24,16 +23,9 @@ func main() {
 		fmt.Printf("Error fetching workflow content: %s \n", err)
 		os.Exit(1)
 	}
-	file, err := os.Create("workflows.json")
+	err = cmd.SaveToFile(wfs)
 	if err != nil {
-		fmt.Printf("Error creating JSON file: %s \n", err)
+		fmt.Printf("Error saving to file: %s \n", err)
 		os.Exit(1)
-	}
-	defer file.Close()
-
-	encoder := json.NewEncoder(file)
-	encoder.SetIndent("", "  ")
-	if err := encoder.Encode(wfs); err != nil {
-		fmt.Printf("Error encoding JSON: %s \n", err)
 	}
 }

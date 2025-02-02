@@ -62,8 +62,9 @@ func FetchRunSteps(ctx context.Context, client *Git, runID int64) ([]Step, error
 	for _, job := range jobs.Jobs {
 		for _, step := range job.Steps {
 			steps = append(steps, Step{
-				Name:   step.GetName(),
-				Status: step.GetStatus(),
+				Name:       step.GetName(),
+				Status:     step.GetStatus(),
+				Conclusion: step.GetConclusion(),
 			})
 		}
 	}
