@@ -25,6 +25,7 @@ type Run struct {
 	Conclusion string
 	CreatedAt  time.Time
 	Steps      []Step
+	Name       string
 }
 
 type Step struct {

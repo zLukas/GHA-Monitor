@@ -35,10 +35,13 @@ func FetchWorkflowRuns(ctx context.Context, client *Git, workflowID int64) ([]Ru
 	if err != nil {
 		return nil, fmt.Errorf("error getting workflow runs: %v", err)
 	}
-
-	var workflowRuns []Run
-	for _, run := range runs.WorkflowRuns {
+	workflowRuns := make([]Run, 0, 3)
+	for i, run := range runs.WorkflowRuns {
+		if i >= 3 {
+			break
+		}
 		workflowRuns = append(workflowRuns, Run{
+			Name:       run.GetName(),
 			ID:         run.GetID(),
 			Status:     run.GetStatus(),
 			Conclusion: run.GetConclusion(),

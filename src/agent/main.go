@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 
@@ -17,8 +18,22 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Println("Agent is running...")
-	cmd.Serve(git)
+	//cmd.Serve(git)
+	wfs, err := cmd.FetchAllWorkflows(git)
+	if err != nil {
+		fmt.Printf("Error fetching workflow content: %s \n", err)
+		os.Exit(1)
+	}
+	file, err := os.Create("workflows.json")
+	if err != nil {
+		fmt.Printf("Error creating JSON file: %s \n", err)
+		os.Exit(1)
+	}
+	defer file.Close()
 
+	encoder := json.NewEncoder(file)
+	encoder.SetIndent("", "  ")
+	if err := encoder.Encode(wfs); err != nil {
+		fmt.Printf("Error encoding JSON: %s \n", err)
+	}
 }
-
-
